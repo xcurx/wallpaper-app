@@ -1,13 +1,14 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import Toast from '@/components/Toast';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const open = () => {
-  const url = "https://raw.githubusercontent.com/AngelJumbo/gruvbox-wallpapers/refs/heads/main/wallpapers/"   
+  const url = "https://raw.githubusercontent.com/AngelJumbo/gruvbox-wallpapers/refs/heads/main/wallpapers/"
   const { category, name } = useLocalSearchParams();
   const [isLiked, setIsLiked] = useState(false);
   const [toast, setToast] = useState("");
@@ -54,6 +55,39 @@ const open = () => {
       handlePress("Download failed!");
     }
   }
+
+  const handleLiked = async () => {
+    try {
+      const value = await AsyncStorage.getItem(`${category}/${name}`);
+      if( value !== null) {
+        setIsLiked(false);
+        await AsyncStorage.removeItem(`${category}/${name}`);
+        handlePress("Removed from liked!");
+      } else {
+        setIsLiked(true);
+        await AsyncStorage.setItem(`${category}/${name}`, JSON.stringify({ category, name }));
+        handlePress("Added to liked!");
+      } 
+    } catch (e) {
+      console.error('Error loading data', e);
+    }
+  }
+
+  useEffect(() => {
+    const checkLiked = async () => {
+      try {
+        const value = await AsyncStorage.getItem(`${category}/${name}`);
+        if (value !== null) {
+          setIsLiked(true);
+        } else {
+          setIsLiked(false);
+        }
+      } catch (e) {
+        console.error('Error loading data', e);
+      }
+    }
+    checkLiked();
+  },[isLiked])
   
   return (
     <View style={{ backgroundColor: '#18181b', flex:1, paddingTop:10, justifyContent:"center" }}>
@@ -98,7 +132,7 @@ const open = () => {
           flexDirection: 'row',
           gap: 20,
          }}
-         onPress={() => setIsLiked(!isLiked)}
+         onPress={handleLiked}
         >
           {
             isLiked ? (
