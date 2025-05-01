@@ -4,19 +4,18 @@ import { Stack } from 'expo-router'
 
 const _layout = () => {
   return (
-    <Stack>
+    <Stack screenOptions={{
+        headerShown: false,
+        animation: 'slide_from_bottom',
+        contentStyle: {
+            backgroundColor: '#18181b',
+        },
+    }}>
         <Stack.Screen
-            name="open"
+            name="categories/[category]"
             options={{
                 headerShown: false,
                 animation: 'slide_from_bottom',
-            }}
-        />
-        <Stack.Screen
-            name="(tabs)"
-            options={{
-                headerShown: false,
-                animation: 'slide_from_right',
             }}
         />
     </Stack>

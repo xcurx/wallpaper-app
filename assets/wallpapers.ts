@@ -853,3 +853,5 @@ export const wallpapers = {
       { "name": "orthvrq3xgb91.jpg", "id": 423 }
     ]
   }
+
+export type WallperKey = keyof typeof wallpapers

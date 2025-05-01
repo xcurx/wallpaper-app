@@ -1,17 +1,12 @@
 import { useState } from "react";
 import { wallpapers as wallpaperData } from "@/assets/wallpapers";
 
-export const useWallpapers = () => {
-    // const [wallpapers, setWallpapers] = useState<Record<string, any>>();
-    
-    // Function to get all wallpapers randomized
+export const useWallpapers = (category?:string) => {
     const getAllWallpapers = () => {
-        // Flatten the wallpaper data into a single array
         const allWallpapers = Object.entries(wallpaperData).flatMap(([category, wallpapers]) => 
             wallpapers.map(wallpaper => ({ ...wallpaper, category }))
         );
         
-        // Randomize the array using Fisher-Yates shuffle algorithm
         const shuffledWallpapers = [...allWallpapers];
         for (let i = shuffledWallpapers.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -21,9 +16,25 @@ export const useWallpapers = () => {
         return shuffledWallpapers;
     };
 
-    // Initialize wallpapers state
-    const [wallpapers, setWallpapers] = useState(() => getAllWallpapers());
+    const getCategories = () => {
+        const categories = Object.keys(wallpaperData);
+        return categories;
+    }
 
-    // Return the wallpapers and a function to refresh them
-    return { wallpapers, refreshWallpapers: () => setWallpapers(getAllWallpapers()) };
+    const getWallpersByCategory = (category: keyof typeof wallpaperData) => {
+        const wallpapers = wallpaperData[category];
+        return wallpapers;
+    }
+
+    const [wallpapers, setWallpapers] = useState(() => getAllWallpapers());
+    const [categories, setCategories] = useState(() => getCategories());
+    const [wallpersByCategory, setWallpersByCategory] = useState(() => getWallpersByCategory(category as keyof typeof wallpaperData));
+
+    return { 
+        wallpapers, 
+        refreshWallpapers: () => setWallpapers(getAllWallpapers()),
+        categories,
+        wallpersByCategory,
+        setWallpersByCategory
+    };
 }

@@ -1,17 +1,19 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams } from 'expo-router';
-import { FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from '@/components/Toast';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getDownloadSize } from '@/helpers/getDownloadSize';
 
 const open = () => {
   const url = "https://raw.githubusercontent.com/AngelJumbo/gruvbox-wallpapers/refs/heads/main/wallpapers/"
   const { category, name } = useLocalSearchParams();
   const [isLiked, setIsLiked] = useState(false);
   const [toast, setToast] = useState("");
+  const [downloadSize, setDownloadSize] = useState(0);
 
   const handlePress = (message:string) => {
     setToast(message);
@@ -72,6 +74,12 @@ const open = () => {
       console.error('Error loading data', e);
     }
   }
+
+  useEffect(() => {
+    getDownloadSize(`${url}${category}/${name}`).then((size) => {
+        setDownloadSize(size || 0);
+    })
+  }, [])
 
   useEffect(() => {
     const checkLiked = async () => {
@@ -160,6 +168,20 @@ const open = () => {
         >
           <Text style={{ color:"white", fontSize:18 }}>Set as wallpaper</Text>
         </TouchableOpacity>
+      </View>
+      <View style={{ padding:10, width:"80%", marginHorizontal:"auto", gap:10, alignItems:"center", backgroundColor:"#27272a", borderRadius:5 }}>
+        <View style={{ flexDirection:"row", gap:10, alignItems:"center" }}>
+          <Ionicons size={18} name="image-outline" color={"#f1f1f1"} />
+          <Text style={{ color:"white", fontSize:12 }}>1980x1080</Text>
+        </View>
+        <View style={{ flexDirection:"row", gap:10, alignItems:"center" }}>
+          <MaterialIcons size={18} name="category" color={"#f1f1f1"} />
+          <Text style={{ color:"white", fontSize:12 }}>{(category as string)[0].toUpperCase() + (category as string).slice(1)}</Text>
+        </View>
+        <View style={{ flexDirection:"row", gap:10, alignItems:"center" }}>
+          <MaterialCommunityIcons size={18} name="folder-download-outline" color={"#f1f1f1"} />
+          <Text style={{ color:"white", fontSize:12 }}>{downloadSize.toFixed(2)} MB</Text>
+        </View>
       </View>
       <Toast set={toast}/>
     </View>

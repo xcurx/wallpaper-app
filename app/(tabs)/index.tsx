@@ -6,15 +6,15 @@ import { TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
-const itemWidth = width / 2 - 8;
 
 const Explore = () => {
-    const url = "https://raw.githubusercontent.com/AngelJumbo/gruvbox-wallpapers/refs/heads/main/wallpapers/"   
-    const tabBarHeight = useBottomTabBarHeight();
-    const { wallpapers } = useWallpapers()
+  const url = "https://raw.githubusercontent.com/AngelJumbo/gruvbox-wallpapers/refs/heads/main/wallpapers/"   
+  const tabBarHeight = useBottomTabBarHeight();
+  const { wallpapers } = useWallpapers()
+
 
   return (
-    <View style={{ backgroundColor: '#18181b', flex:1, paddingBottom: tabBarHeight }}>
+    <View style={{ backgroundColor: '#18181b', flex:1 }}>
       <StatusBar barStyle="default" backgroundColor={"#18181b"}/>
       <SafeAreaView style={{ flex: 1, alignItems: 'center', width: '100%' }}>
         <View style={{marginTop:5, marginBottom:10}}>
@@ -22,12 +22,13 @@ const Explore = () => {
         </View>
         <FlatList
           style={{ width: '100%', paddingHorizontal:6, paddingBottom: 10 }}
+          contentContainerStyle={{ paddingBottom: tabBarHeight + 10 }} 
           data={wallpapers}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
-          renderItem={({ item }) => (
-            <TouchableOpacity 
+          renderItem={({ item, index }) => {
+            return <TouchableOpacity 
               activeOpacity={0.7}
               onPress={() => router.push({
                 pathname: "/open",
@@ -46,7 +47,7 @@ const Explore = () => {
                 }} 
               />
             </TouchableOpacity>
-          )}
+          }}
          />
       </SafeAreaView>
     </View>
@@ -54,30 +55,3 @@ const Explore = () => {
 }
 
 export default Explore
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#18181b',
-  },
-  header: {
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  title: {
-    color: 'white',
-    fontSize: 24,
-  },
-  itemContainer: {
-    margin: 4,
-  },
-  image: {
-    borderRadius: 10,
-  },
-  itemTitle: {
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 4,
-  }
-})

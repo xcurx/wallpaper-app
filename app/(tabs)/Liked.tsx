@@ -33,19 +33,15 @@ const Liked = () => {
     }
   }
 
-  // Replace useEffect with useFocusEffect
   useFocusEffect(
     React.useCallback(() => {
       getLiked();
       console.log("likedWallpapers", likedWallpapers);
-      return () => {
-        // cleanup if needed
-      };
     }, [])
   );
 
   return (
-   <View style={{ backgroundColor: '#18181b', flex:1, paddingBottom: tabBarHeight }}>
+   <View style={{ backgroundColor: '#18181b', flex:1 }}>
      <StatusBar barStyle="default" backgroundColor={"#18181b"}/>
      <SafeAreaView style={{ flex: 1, alignItems: 'center', width: '100%' }}>
        <View style={{marginTop:5, marginBottom:10}}>
@@ -53,6 +49,7 @@ const Liked = () => {
        </View>
        <FlatList
          style={{ width: '100%', paddingHorizontal:6, paddingBottom: 10 }}
+         contentContainerStyle={{ paddingBottom: tabBarHeight + 10 }} 
          data={likedWallpapers}
          keyExtractor={(item) => item.id.toString()}
          numColumns={2}
